@@ -23,7 +23,7 @@ class Room:
             if visible_entities:
                 output += "\n\n-- You see the following creatures: --"
                 for i in visible_entities:
-                    output += "\n- " + i.name
+                    output += f"\n- {i.getNameAndSpecies()}"
         
         if self.exits:
             output += "\n\n-- You see the following exits: --"

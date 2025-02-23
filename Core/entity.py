@@ -6,6 +6,7 @@ class Entity:
                  description: str,
                  hp: float,):
         self.name = name
+        self.speciesname = "Entity"
         self.description = description
         self.hp = hp
         self.maxhp = hp
@@ -47,10 +48,14 @@ class Entity:
         self.removeFromCurrentroom()
     
     def __str__(self):
-        return f"[{self.hp}/{self.maxhp}HP] {self.name}: {self.description}"
+        return f"[{self.hp}/{self.maxhp}HP] {self.getNameAndSpecies()}: {self.description}"
+
+    def getNameAndSpecies(self):
+        return f"{self.name} [{self.speciesname}]"
 
 class Human(Entity):
     def __init__(self, name, description):
         super().__init__(name, description, 100)
         self.index = "human"
+        self.speciesname = "Human"
         self.inv = Inventory(self.name + "'s inventory",15)
