@@ -6,8 +6,7 @@ from Core import *
 
 mainroom = Room("Main Room","It's the main room!")
 secondroom = Room("Second Room","It's newer and seconder!")
-mainroom.exits.append(secondroom)
-secondroom.exits.append(mainroom)
+mainroom.addTwoWay(secondroom)
 
 #Initialize player
 player = Human("Player","Common person")

@@ -7,6 +7,12 @@ class Room:
         self.entities = []
         self.exits = []
     
+    def addTwoWay(self, other:"Room"):
+        if other not in self.exits:
+            self.exits.append(other)
+        if self not in other.exits:
+            other.exits.append(self)
+
     def __str__(self):
         output = f"{self.name}: {self.description}"
         if self.items:
