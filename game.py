@@ -5,6 +5,9 @@ from Core import *
 #endregion
 
 mainroom = Room("Main Room","It's the main room!")
+secondroom = Room("Second Room","It's newer and seconder!")
+mainroom.exits.append(secondroom)
+secondroom.exits.append(mainroom)
 
 #Initialize player
 player = Human("Player","Common person")
@@ -139,6 +142,24 @@ def dropall(args):
     else:
         print("You have nothing to drop.")
 
+def go(args):
+    if not args:
+        print("You must specify a room to go to.")
+        print('Names of rooms longer than 1 word need to be in "" marks')
+        return
+    targetname = args[0]
+    target = None
+    if player.currentroom.exits:
+        for i in player.currentroom.exits:
+            if targetname == i.name.lower():
+                target = i
+                break
+    if target:
+        player.addToRoom(target)
+        print(f"You go to {target.name}.")
+    else:
+        print("You see no such room.")
+
 #endregion
 commands = { #COMMAND NAMES MUST BE LOWERCASE
     "exit": exit_program,
@@ -166,6 +187,9 @@ commands = { #COMMAND NAMES MUST BE LOWERCASE
 
     "dropall" : dropall,
     "dropa": dropall,
+
+    "go" : go,
+    "g" : go,
 }
 
 def command_interpreter_loop(cmds):
