@@ -167,6 +167,7 @@ commands = { #COMMAND NAMES MUST BE LOWERCASE
     "help": help_command,
 
     "look": look,
+    "l" : look,
 
     "me": lookself,
     "self": lookself,
@@ -174,6 +175,7 @@ commands = { #COMMAND NAMES MUST BE LOWERCASE
     "lookself" : lookself,
 
     "use": use,
+    "u" : use,
 
     "inv": inv,
     "i": inv,
