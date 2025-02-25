@@ -71,7 +71,7 @@ def inv(args):
 
 def use(args):
     if not args:
-        print("You must specify an item to use.")
+        print("You must specify an item or object to use.")
         print('Names of items longer than 1 word need to be in "" marks')
         return
     targetname = args[0]
