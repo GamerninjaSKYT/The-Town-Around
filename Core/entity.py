@@ -53,9 +53,15 @@ class Entity:
     def getNameAndSpecies(self):
         return f"{self.name} [{self.speciesname}]"
 
-class Human(Entity):
+class Alive(Entity): #Entities that eat, drink and sleep should go here
+    def __init__(self, name, description, hp):
+        super().__init__(name, description, hp)
+        self.speciesname = "Alive"
+        self.index = "alive"
+
+class Human(Alive):
     def __init__(self, name, description):
         super().__init__(name, description, 100)
-        self.index = "human"
         self.speciesname = "Human"
         self.inv = Inventory(self.name + "'s inventory",15)
+        self.index = "human"

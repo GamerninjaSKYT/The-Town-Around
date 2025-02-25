@@ -147,12 +147,17 @@ class Food(Item):
         super().__init__(name, description, size, True, stackable)
         self.index = "food"
         self.heal = heal
+        self.consumeverb = "eat"
     
     def use(self, user):
+        if not isinstance(user, Alive): #Only entities inherited from the Alive class need to eat
+            if user.player:
+                print(f"You don't seem to have the need to {self.consumeverb}")
+            return
         start_hp = user.hp
         if user.heal(self.heal):
             if user.player:
-                print(f"You eat {self.name} and heal by {user.hp - start_hp}HP")
+                print(f"You {self.consumeverb} {self.name} and heal {user.hp - start_hp}HP")
             self.count -= 1
             if self.count < 1:
                 self.remove()
