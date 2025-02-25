@@ -18,7 +18,7 @@ class Room:
         if self.items:
             output += "\n\n-- You see the following items and objects: --"
             for i in self.items:
-                output += "\n- " + i.name
+                output += "\n- " + i.getItemHeader()
 
         if self.entities:
             visible_entities = self.entities.copy()

@@ -16,9 +16,9 @@ class Inventory:
         return dropped
 
     def __str__(self):
-        output = f"{self.name} is empty\nWeight : [0/{self.maxsize}]"
+        output = f"{self.name} is empty\nWeight : [{self.totalsize}/{self.maxsize}]"
         if self.content:
             output = f"-- {self.name} contains the following items: --\nWeight : [{self.totalsize}/{self.maxsize}]"
             for i in self.content:
-                output += "\n- " + i.name
+                output += "\n- " + i.getItemHeader()
         return output

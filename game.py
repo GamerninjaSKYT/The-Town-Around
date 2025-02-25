@@ -15,6 +15,7 @@ player.inv.name = "Your inventory"
 player.addToRoom(mainroom)
 
 apple = Apple()
+apple.count = 21
 apple.addToRoom(mainroom)
 
 #region CommandList
@@ -103,7 +104,14 @@ def take(args):
                 target = i
                 break
     if target:
-        if target.addToInv(player.inv):
+        numOfItems = target.count
+        if len(args) > 1:
+            if args[1].isnumeric():
+                numOfItems = int(args[1])
+            else:
+                print(f"{args[1]} is not a valid number.")
+                return
+        if target.addToInv(player.inv, numOfItems):
             print(f"You take {target.name}.")
         elif target.cantake == False:
             print(f"You cannot take {target.name}")
@@ -127,7 +135,14 @@ def drop(args):
                 target = i
                 break
     if target:
-        target.addToRoom(player.currentroom)
+        numOfItems = target.count
+        if len(args) > 1:
+            if args[1].isnumeric():
+                numOfItems = int(args[1])
+            else:
+                print(f"{args[1]} is not a valid number.")
+                return
+        target.addToRoom(player.currentroom, numOfItems)
         print(f"You drop {target.name}.")
     else:
         print("You have nothing like that.")

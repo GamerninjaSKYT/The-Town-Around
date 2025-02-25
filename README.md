@@ -7,4 +7,4 @@
  First, if you happen to not have it, install python3 and pip.\
  Then install PyInstaller by running "pip install pyinstaller" in your terminal.\
  Then download the files of this repository, open a terminal inside the downloaded folder and run "pyinstaller game.py --onefile".\
- And right after that just run "./dist/game".\
+ And right after that just run "./dist/game".
