@@ -81,7 +81,10 @@ class Item:
             self.currentinv.totalsize += self.size
             return True
         else:
-            canAdd = min(m.floor((target.maxsize-target.totalsize)/self.size), numOfItems)
+            if self.size > 0:
+                canAdd = min(m.floor((target.maxsize-target.totalsize)/self.size), numOfItems)
+            else:
+                canAdd = numOfItems
             if canAdd < 1:
                 return False
             for i in target.content:
@@ -165,9 +168,17 @@ class Food(Item):
             print("You already have full health")
     
     def __str__(self):
-        return super().__str__()+f"\nHeals {self.heal}HP"
+        return super().__str__()+f"\nHeals {self.heal}HP."
 
 class Apple(Food):
     def __init__(self):
         super().__init__("Apple", "A juicy apple", 1, 5, True)
         self.index = "apple"
+
+class Coin(Item):
+    def __init__(self):
+        super().__init__("Coin", "A small golden coin", 0, True, True)
+        self.currency = 1
+    
+    def __str__(self):
+        return super().__str__()+f"\nWorth {self.currency} currency."

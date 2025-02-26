@@ -18,6 +18,10 @@ apple = Apple()
 apple.count = 21
 apple.addToRoom(mainroom)
 
+coin = Coin()
+coin.count = 54
+coin.addToRoom(secondroom)
+
 #region CommandList
 def exit_program(args):
     print(">>Exiting<<")
