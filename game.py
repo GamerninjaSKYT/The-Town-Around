@@ -76,7 +76,7 @@ def inv(args):
 def use(args):
     if not args:
         print("You must specify an item or object to use.")
-        print('Names of items longer than 1 word need to be in "" marks')
+        print(multi_word_name_notice("items or objects"))
         return
     targetname = args[0]
     target = None
@@ -98,7 +98,7 @@ def use(args):
 def take(args):
     if not args:
         print("You must specify an item to take.")
-        print('Names of items longer than 1 word need to be in "" marks')
+        print(multi_word_name_notice("items"))
         return
     targetname = args[0]
     target = None
@@ -129,7 +129,7 @@ def take(args):
 def drop(args):
     if not args:
         print("You must specify an item to drop.")
-        print('Names of items longer than 1 word need to be in "" marks')
+        print(multi_word_name_notice("items"))
         return
     targetname = args[0]
     target = None
@@ -163,7 +163,7 @@ def dropall(args):
 def go(args):
     if not args:
         print("You must specify a room to go to.")
-        print('Names of rooms longer than 1 word need to be in "" marks')
+        print(multi_word_name_notice("rooms"))
         return
     targetname = args[0]
     target = None
@@ -177,6 +177,31 @@ def go(args):
         print(f"You go to {target.name}.")
     else:
         print("You see no such room.")
+
+def equip(args):
+    if not args:
+        print("You must specify an item to equip.")
+        print(multi_word_name_notice("items"))
+        return
+    targetname = args[0]
+    target = None
+    if player.inv.content:
+        for i in player.inv.content:
+            if targetname == i.name.lower():
+                target = i
+                break
+    if target:
+        target.equipTo(player)
+        print(f"You equip {target.name}.")
+    else:
+        print("You have nothing like that.")
+
+def unequip(args):
+    if not player.equiped:
+        print("You have nothing equipped to unequip.")
+        return
+    print(f"You unequip {player.equiped.name}")
+    player.equiped.unequip()
 
 #endregion
 commands = { #COMMAND NAMES MUST BE LOWERCASE
@@ -201,15 +226,23 @@ commands = { #COMMAND NAMES MUST BE LOWERCASE
     "inventory": inv,
 
     "take": take,
+    "t" : take,
     "grab": take,
 
     "drop": drop,
+    "d" : drop,
 
     "dropall" : dropall,
     "dropa": dropall,
 
     "go" : go,
     "g" : go,
+
+    "equip": equip,
+    "e" : equip,
+
+    "unequip" : unequip,
+    "une" : unequip,
 }
 
 def command_interpreter_loop(cmds):

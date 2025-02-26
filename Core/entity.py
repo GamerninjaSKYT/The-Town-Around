@@ -13,6 +13,7 @@ class Entity:
         self.currentroom:Room = None
         self.player = False
         self.inv = None
+        self.equiped = None #An item from self.inv
         self.index = "entity"
     
     def addToRoom(self, target:Room): #Moves the creature from its current room to the target room
@@ -48,7 +49,10 @@ class Entity:
         self.removeFromCurrentroom()
     
     def __str__(self):
-        return f"[{self.hp}/{self.maxhp}HP] {self.getNameAndSpecies()}: {self.description}"
+        output = f"[{self.hp}/{self.maxhp}HP] {self.getNameAndSpecies()}: {self.description}"
+        if self.equiped:
+            output += f"\nIt's holding {self.equiped.name}"
+        return output
 
     def getNameAndSpecies(self):
         return f"{self.name} [{self.speciesname}]"

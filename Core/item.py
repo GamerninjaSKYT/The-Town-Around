@@ -13,6 +13,7 @@ class Item:
         self.description = description
         self.currentroom:Room = None
         self.currentinv:Inventory = None
+        self.currentequip:Entity = None #Which entity (if any) has this item currently equipped
         self.size = size
         self.cantake = cantake
         self.stackable = stackable
@@ -115,6 +116,17 @@ class Item:
             else:
                 return False
 
+    def equipTo(self, target:Entity):
+        if target.equiped:
+            target.equiped.unequip()
+        target.equiped = self
+        self.currentequip = target
+    def unequip(self):
+        if self.currentequip == None:
+            return
+        self.currentequip.equiped = None
+        self.currentequip = None
+
     def removeFromCurrentinv(self):
         if self.currentinv:
             self.currentinv.content.remove(self)
@@ -127,9 +139,11 @@ class Item:
     def remove(self): #Removes this item from the world
         self.removeFromCurrentroom()
         self.removeFromCurrentinv()
+        self.unequip()
     def clear_location_vars(self): #Sets currentinv/currentroom to None but doesnt affect the room/inv itself
         self.currentinv = None
         self.currentroom = None
+        self.currentequip = None
 
     def use(self, user: Entity):
         if user.player:
