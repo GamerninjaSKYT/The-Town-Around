@@ -51,11 +51,21 @@ class Entity:
     def __str__(self):
         output = f"[{self.hp}/{self.maxhp}HP] {self.getNameAndSpecies()}: {self.description}"
         if self.equiped:
-            output += f"\nIt's holding {self.equiped.name}"
+            output += f"\n{self.getPronoun(3,False)} holding {self.equiped.name}"
         return output
 
     def getNameAndSpecies(self):
         return f"{self.name} [{self.speciesname}]"
+    
+    def getPronoun(self, case = 0, lowercase = True): #0 = subject(They), 1 = object(Them), 2 = possessive(Their), 3 = subject+verb(They're)
+        if self.player:
+            pronouns = ["You", "You", "Your", "You're"]
+        else:
+            pronouns = ["It", "It", "Its", "It's"]
+
+        result = pronouns[case] if 0 <= case < len(pronouns) else "[Error: Invalid pronoun case]"
+        return result.lower() if lowercase else result
+
 
 class Alive(Entity): #Entities that eat, drink and sleep should go here
     def __init__(self, name, description, hp):
