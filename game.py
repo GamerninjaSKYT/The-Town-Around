@@ -22,7 +22,7 @@ coin = Coin()
 coin.count = 54
 coin.addToRoom(secondroom)
 
-#region CommandList
+#region CommandFuncs
 def exit_program(args):
     print(">>Exiting<<")
     sys.exit()
@@ -31,12 +31,28 @@ def help_command(args):
     seen_functions = set()
     unique_commands = []
     
-    for cmd, func in commands.items():
-        if func not in seen_functions:
-            seen_functions.add(func)
-            unique_commands.append(cmd)
-
-    print("Available commands:\n", "\n ".join(unique_commands))
+    if not args:
+        for cmd, var in commands.items():
+            if var[0] not in seen_functions:
+                seen_functions.add(var[0])
+                unique_commands.append(cmd)
+        print("Available commands:\n", "\n ".join(unique_commands))
+    else:
+        targetname = args[0]
+        for cmd, var in commands.items():
+            if cmd == targetname and len(var) > 1:
+                print(var[1])
+            elif cmd == targetname:
+                print("This command has no help text.")
+            if cmd == targetname:
+                aliases = []
+                for cmd2, var2 in commands.items():
+                    if var2[0] == var[0] and cmd2 != cmd:
+                        aliases.append(cmd2)
+                if len(aliases) > 0:
+                    print("Aliases:\n", "\n ".join(aliases))
+                return
+        print("There's no command like that.")
 
 def unknown_command(args):
     print("Unknown command. Type 'help' for a list of commands.")
@@ -205,46 +221,61 @@ def unequip(args):
     player.equiped.unequip()
 
 #endregion
-commands = { #COMMAND NAMES MUST BE LOWERCASE
-    "exit": exit_program,
-    "quit": exit_program,
+#region CommandList
+exit_help = "Exits the game."
+help_help = "Prints all the commands and prints the details of a command when its name is given as an argument."
+look_help = "Prints info about the current room and prints info about items and entities when their name is given as an argument."
+me_help = "Prints info about the player."
+use_help = "Uses an item or object when its name is given as an argument."
+inv_help = "Prints the player's inventory."
+take_help = "Picks up an item from the current room when its name is given as an argument."
+drop_help = "Drops an item from the inventory when its name is given as an argument."
+dropall_help = "Drops all items from the inventory."
+go_help = "Goes to a room when its name is given as an argument."
+equip_help = "Equips an item when its name is given as an argument."
+unequip_help = "Unequips an item when its name is given as an argument."
 
-    "help": help_command,
+commands = { #COMMAND NAMES MUST BE LOWERCASE AND ALIASES NEVER GO FIRST
+    "exit": [exit_program, exit_help],
+    "quit": [exit_program, exit_help],
 
-    "look": look,
-    "l" : look,
+    "help": [help_command, help_help],
 
-    "me": lookself,
-    "self": lookself,
-    "lookme" : lookself,
-    "lookself" : lookself,
+    "look": [look, look_help],
+    "l" : [look, look_help],
 
-    "use": use,
-    "u" : use,
+    "me": [lookself, me_help],
+    "self": [lookself, me_help],
+    "lookme" : [lookself, me_help],
+    "lookself" : [lookself, me_help],
 
-    "inv": inv,
-    "i": inv,
-    "inventory": inv,
+    "use": [use, use_help],
+    "u" : [use, use_help],
 
-    "take": take,
-    "t" : take,
-    "grab": take,
+    "inv": [inv, inv_help],
+    "i": [inv, inv_help],
+    "inventory": [inv, inv_help],
 
-    "drop": drop,
-    "d" : drop,
+    "take": [take, take_help],
+    "t" : [take, take_help],
+    "grab": [take, take_help],
 
-    "dropall" : dropall,
-    "dropa": dropall,
+    "drop": [drop, drop_help],
+    "d" : [drop, drop_help],
 
-    "go" : go,
-    "g" : go,
+    "dropall" : [dropall, dropall_help],
+    "dropa": [dropall, dropall_help],
 
-    "equip": equip,
-    "e" : equip,
+    "go" : [go, go_help],
+    "g" : [go, go_help],
 
-    "unequip" : unequip,
-    "une" : unequip,
+    "equip": [equip, equip_help],
+    "e" : [equip, equip_help],
+
+    "unequip" : [unequip, unequip_help],
+    "une" : [unequip, unequip_help],
 }
+#endregion
 
 def command_interpreter_loop(cmds):
     while True:
@@ -253,7 +284,7 @@ def command_interpreter_loop(cmds):
             if not user_input:
                 continue
             command, *args = user_input
-            cmds.get(command, unknown_command)(args)
+            cmds.get(command, unknown_command)[0](args)
         except KeyboardInterrupt:
             print("\nUse 'exit' to quit.")
         except Exception as e:
