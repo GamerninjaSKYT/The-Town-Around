@@ -33,13 +33,16 @@ class Entity:
         self.hp -= dmg
         if self.hp <= 0:
             self.die()
-    
     def heal(self, heal):
         if self.hp < self.maxhp:
             self.hp = min(self.maxhp, self.hp + heal)
             return True
         else:
             return False
+    def sethp(self, hp):
+        self.hp = min(self.maxhp, hp)
+        if self.hp <= 0:
+            self.die()
     
     def die(self):
         self.hp = 0
