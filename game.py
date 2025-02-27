@@ -175,6 +175,7 @@ def go(args):
     if target:
         player.addToRoom(target)
         print(f"You go to {target.name}.")
+        print(target)
     else:
         print("You see no such room.")
 
