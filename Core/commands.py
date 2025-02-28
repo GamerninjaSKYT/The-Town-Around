@@ -211,7 +211,7 @@ def equip(args):
         if target.equipTo(player):
             print(f"You equip {target.name}.")
         else:
-            print(f"You already equiped {target.name}.")
+            print(f"You already equipped {target.name}.")
     else:
         print("You have nothing like that.")
 

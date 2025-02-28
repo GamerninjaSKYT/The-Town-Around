@@ -21,4 +21,7 @@ class Inventory:
             output = f"-- {self.name} contains the following items: --\nWeight : [{self.totalsize}/{self.maxsize}]"
             for i in self.content:
                 output += "\n- " + i.getItemHeader()
+                if i.currentequip:
+                    if i.currentequip.player:
+                        output += " [Equipped]"
         return output
