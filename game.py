@@ -20,7 +20,7 @@ coin = Coin()
 coin.count = 54
 coin.addToRoom(secondroom)
 
-def update():
+def update(): #Runs everytime the player executes a gameplay-impacting command
     for entity in player.currentroom.entities:
         entity.update()
     for item in player.currentroom.items:

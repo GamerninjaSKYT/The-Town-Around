@@ -93,13 +93,16 @@ def use(args):
         if len(args) > 1:
             if args[1].isnumeric():
                 numOfItems = int(args[1])
-                numOfItems = min(100, numOfItems)
+                maxItems = 1000
+                if numOfItems > maxItems:
+                    print(f"{numOfItems} is above {maxItems}.")
+                    return
             else:
                 print(f"{args[1]} is not a valid number.")
                 return
         for x in range(numOfItems):
-            update()
-            target.use(player)
+            if target.use(player):
+                update()
     else:
         print("There's nothing like that here.")
 

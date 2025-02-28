@@ -25,7 +25,7 @@ class Item:
         return (self.index == other.index and 
                 self.name == other.name)
 
-    def update(self):
+    def update(self): #Runs everytime the player executes a gameplay-impacting command
         pass
 
     def addToRoom(self, target:Room, numOfItems = 0): #Moves the item from its current room to the target room
@@ -155,6 +155,7 @@ class Item:
     def use(self, user: Entity):
         if user.player:
             print(f"{self.name} has no use.")
+        return False
     
     def __str__(self):
         output = f"{self.getItemHeader()}: {self.description}"
@@ -176,11 +177,11 @@ class Food(Item):
     
     def use(self, user):
         if self.count < 1:
-            return
+            return False
         if not isinstance(user, Alive): #Only entities inherited from the Alive class need to eat
             if user.player:
                 print(f"You don't seem to have the need to {self.consumeverb}")
-            return
+            return False
         start_hunger = user.hunger
         start_thirst = user.thirst
         restored_hunger = user.satiate(self.hungerpoints)
@@ -193,8 +194,10 @@ class Food(Item):
                 self.currentinv.totalsize -= self.size*1
             if self.count < 1:
                 self.remove()
+            return True
         elif user.player:
             print("You already have full hunger and thirst.")
+        return False
     
     def __str__(self):
         return super().__str__()+f"\nRestores {self.hungerpoints} hunger and {self.thirstpoints} thirst."

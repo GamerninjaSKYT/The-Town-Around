@@ -29,7 +29,7 @@ class Entity:
         if target == self.currentroom:
             self.removeFromCurrentroom()
 
-    def update(self): #Entity behaviour goes here
+    def update(self): #Runs everytime the player executes a gameplay-impacting command
         pass
 
     def damage(self, dmg):
@@ -93,7 +93,9 @@ class Alive(Entity): #Entities that eat, drink and sleep should go here
         self.hunger = min(self.maxhunger, amount)
         if self.hunger <= 0:
             self.hunger = 0
-            self.damage(1)
+            self.damage(10)
+            if self.player:
+                print("You feel very hungry.")
     
     def dehydrate(self, amount):
         self.setthirst(self.thirst - amount)
@@ -107,16 +109,25 @@ class Alive(Entity): #Entities that eat, drink and sleep should go here
         self.thirst = min(self.maxthirst, amount)
         if self.thirst <= 0:
             self.thirst = 0
-            self.damage(2)
+            self.damage(20)
+            if self.player:
+                print("You feel very thirsty.")
     
-    def update(self):
+    def update(self): #Runs everytime the player executes a gameplay-impacting command
         self.desatiate(1)
         self.dehydrate(2)
 
         return super().update()
 
     def __str__(self):
-        return super().__str__()+f"\nHunger : {self.hunger}/{self.maxhunger}\nThirst : {self.thirst}/{self.maxthirst}"
+        output = super().__str__()+f"\nHunger : {self.hunger}/{self.maxhunger}\nThirst : {self.thirst}/{self.maxthirst}"
+        if self.hunger < 1 and self.thirst < 1:
+            output += f"\n{self.getPronoun(3,False)} starving and thirsting"
+        elif self.hunger < 1:
+            output += f"\n{self.getPronoun(3,False)} starving"
+        elif self.thirst < 1:
+            output += f"\n{self.getPronoun(3,False)} thirsting"
+        return output
 
 class Human(Alive):
     def __init__(self, name, description):
