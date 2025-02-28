@@ -1,6 +1,6 @@
 import sys
 import shlex
-from game import player
+from game import player, update
 from Core.constants import multi_word_name_notice
 from Core import *
 
@@ -78,18 +78,28 @@ def use(args):
         return
     targetname = args[0]
     target = None
-    if player.currentroom.items:
-        for i in player.currentroom.items:
-            if targetname == i.name.lower():
-                target = i
-                break
-    if player.inv.content and target == None:
+    if player.inv.content:
         for i in player.inv.content:
             if targetname == i.name.lower():
                 target = i
                 break
+    if player.currentroom.items and target == None:
+        for i in player.currentroom.items:
+            if targetname == i.name.lower():
+                target = i
+                break
     if target:
-        target.use(player)
+        numOfItems = 1
+        if len(args) > 1:
+            if args[1].isnumeric():
+                numOfItems = int(args[1])
+                numOfItems = min(100, numOfItems)
+            else:
+                print(f"{args[1]} is not a valid number.")
+                return
+        for x in range(numOfItems):
+            update()
+            target.use(player)
     else:
         print("There's nothing like that here.")
 
@@ -113,6 +123,7 @@ def take(args):
             else:
                 print(f"{args[1]} is not a valid number.")
                 return
+        update()
         if target.addToInv(player.inv, numOfItems):
             print(f"You take {target.name}.")
         elif target.cantake == False:
@@ -144,6 +155,7 @@ def drop(args):
             else:
                 print(f"{args[1]} is not a valid number.")
                 return
+        update()
         target.addToRoom(player.currentroom, numOfItems)
         print(f"You drop {target.name}.")
     else:
@@ -154,6 +166,7 @@ def dropall(args):
     if player.inv.content:
         dropped = player.inv.dropContents(player.currentroom)
     if dropped:
+        update()
         print(f"You dropped {dropped} item(s).")
     else:
         print("You have nothing to drop.")
@@ -171,6 +184,7 @@ def go(args):
                 target = i
                 break
     if target:
+        update()
         player.addToRoom(target)
         print(f"You go to {target.name}.")
         print(target)
@@ -190,8 +204,11 @@ def equip(args):
                 target = i
                 break
     if target:
-        target.equipTo(player)
-        print(f"You equip {target.name}.")
+        update()
+        if target.equipTo(player):
+            print(f"You equip {target.name}.")
+        else:
+            print(f"You already equiped {target.name}.")
     else:
         print("You have nothing like that.")
 
@@ -199,6 +216,7 @@ def unequip(args):
     if not player.equiped:
         print("You have nothing equipped to unequip.")
         return
+    update()
     print(f"You unequip {player.equiped.name}")
     player.equiped.unequip()
 

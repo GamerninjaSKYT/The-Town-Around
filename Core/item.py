@@ -18,11 +18,15 @@ class Item:
         self.cantake = cantake
         self.stackable = stackable
         self.count = 1
+        self.removed = False
         self.index = "item"
     
     def canStack(self, other:"Item"):
         return (self.index == other.index and 
                 self.name == other.name)
+
+    def update(self):
+        pass
 
     def addToRoom(self, target:Room, numOfItems = 0): #Moves the item from its current room to the target room
         if self.currentroom == target:
@@ -117,10 +121,13 @@ class Item:
                 return False
 
     def equipTo(self, target:Entity):
+        if self.currentequip == target:
+            return False
         if target.equiped:
             target.equiped.unequip()
         target.equiped = self
         self.currentequip = target
+        return True
     def unequip(self):
         if self.currentequip == None:
             return
@@ -160,33 +167,41 @@ class Item:
         return f"{self.name}{countstr} [Weight : {self.size * self.count}]"
 
 class Food(Item):
-    def __init__(self, name, description, size, heal, stackable):
+    def __init__(self, name, description, size, hungerpoints, thirstpoints, stackable):
         super().__init__(name, description, size, True, stackable)
         self.index = "food"
-        self.heal = heal
+        self.hungerpoints = hungerpoints
+        self.thirstpoints = thirstpoints
         self.consumeverb = "eat"
     
     def use(self, user):
+        if self.count < 1:
+            return
         if not isinstance(user, Alive): #Only entities inherited from the Alive class need to eat
             if user.player:
                 print(f"You don't seem to have the need to {self.consumeverb}")
             return
-        start_hp = user.hp
-        if user.heal(self.heal):
+        start_hunger = user.hunger
+        start_thirst = user.thirst
+        restored_hunger = user.satiate(self.hungerpoints)
+        restored_thirst = user.hydrate(self.thirstpoints)
+        if restored_hunger or restored_thirst:
             if user.player:
-                print(f"You {self.consumeverb} {self.name} and heal {user.hp - start_hp}HP")
+                print(f"You {self.consumeverb} {self.name} and restore {user.hunger - start_hunger} hunger and {user.thirst - start_thirst} thirst.")
             self.count -= 1
+            if self.currentinv:
+                self.currentinv.totalsize -= self.size*1
             if self.count < 1:
                 self.remove()
         elif user.player:
-            print("You already have full health")
+            print("You already have full hunger and thirst.")
     
     def __str__(self):
-        return super().__str__()+f"\nHeals {self.heal}HP."
+        return super().__str__()+f"\nRestores {self.hungerpoints} hunger and {self.thirstpoints} thirst."
 
 class Apple(Food):
     def __init__(self):
-        super().__init__("Apple", "A juicy apple", 1, 5, True)
+        super().__init__("Apple", "A juicy apple", 1, 5, 10, True)
         self.index = "apple"
 
 class Coin(Item):

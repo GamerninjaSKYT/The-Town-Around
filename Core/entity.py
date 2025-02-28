@@ -29,13 +29,14 @@ class Entity:
         if target == self.currentroom:
             self.removeFromCurrentroom()
 
+    def update(self): #Entity behaviour goes here
+        pass
+
     def damage(self, dmg):
-        self.hp -= dmg
-        if self.hp <= 0:
-            self.die()
+        self.sethp(self.hp - dmg)
     def heal(self, heal):
         if self.hp < self.maxhp:
-            self.hp = min(self.maxhp, self.hp + heal)
+            self.sethp(self.hp + heal)
             return True
         else:
             return False
@@ -71,14 +72,58 @@ class Entity:
 
 
 class Alive(Entity): #Entities that eat, drink and sleep should go here
-    def __init__(self, name, description, hp):
+    def __init__(self, name, description, hp, hunger:float, thirst:float):
         super().__init__(name, description, hp)
         self.speciesname = "Alive"
         self.index = "alive"
+        self.hunger = hunger
+        self.thirst = thirst
+        self.maxhunger = hunger
+        self.maxthirst = thirst
+    
+    def desatiate(self, amount):
+        self.sethunger(self.hunger - amount)
+    def satiate(self, amount):
+        if self.hunger < self.maxhunger:
+            self.sethunger(self.hunger + amount)
+            return True
+        else:
+            return False
+    def sethunger(self, amount):
+        self.hunger = min(self.maxhunger, amount)
+        if self.hunger <= 0:
+            self.hunger = 0
+            self.damage(1)
+    
+    def dehydrate(self, amount):
+        self.setthirst(self.thirst - amount)
+    def hydrate(self, amount):
+        if self.thirst < self.maxthirst:
+            self.setthirst(self.thirst + amount)
+            return True
+        else:
+            return False
+    def setthirst(self, amount):
+        self.thirst = min(self.maxthirst, amount)
+        if self.thirst <= 0:
+            self.thirst = 0
+            self.damage(2)
+    
+    def update(self):
+        self.desatiate(1)
+        self.dehydrate(2)
+
+        return super().update()
+
+    def __str__(self):
+        return super().__str__()+f"\nHunger : {self.hunger}/{self.maxhunger}\nThirst : {self.thirst}/{self.maxthirst}"
 
 class Human(Alive):
     def __init__(self, name, description):
-        super().__init__(name, description, 100)
+        super().__init__(name, description, 100, 100, 100)
         self.speciesname = "Human"
         self.inv = Inventory(self.name + "'s inventory",15)
         self.index = "human"
+    
+    def __str__(self):
+        return super().__str__()
