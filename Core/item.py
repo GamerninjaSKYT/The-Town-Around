@@ -18,7 +18,7 @@ class Item:
         self.cantake = cantake
         self.stackable = stackable
         self.count = 1
-        self.removed = False
+        self.deleted = False
         self.index = "item"
     
     def canStack(self, other:"Item"):
@@ -47,7 +47,7 @@ class Item:
                         self.currentinv.totalsize -= numOfItems*self.size
                     numOfItems = 0
                     if self.count < 1:
-                        self.remove()
+                        self.remove(True)
                         return
                     break
             if numOfItems:
@@ -60,7 +60,7 @@ class Item:
                 if self.currentinv:
                         self.currentinv.totalsize -= numOfItems*self.size
                 if self.count < 1:
-                    self.remove()
+                    self.remove(True)
                 return
 
     def removeFromCurrentroom(self): #Removes the item from its current room
@@ -101,7 +101,7 @@ class Item:
                         self.currentinv.totalsize -= canAdd*self.size
                     canAdd = 0
                     if self.count < 1:
-                        self.remove()
+                        self.remove(True)
                         return True
                     break
             if canAdd:
@@ -115,7 +115,7 @@ class Item:
                 if self.currentinv:
                         self.currentinv.totalsize -= canAdd*self.size
                 if self.count < 1:
-                    self.remove()
+                    self.remove(True)
                 return True
             else:
                 return False
@@ -143,10 +143,12 @@ class Item:
         if target == self.currentinv:
             self.removeFromCurrentinv()
 
-    def remove(self): #Removes this item from the world
+    def remove(self, delete = False): #Removes this item from the world (but doesnt necessarily delete it)
         self.removeFromCurrentroom()
         self.removeFromCurrentinv()
         self.unequip()
+        if delete:
+            self.deleted = True
     def clear_location_vars(self): #Sets currentinv/currentroom to None but doesnt affect the room/inv itself
         self.currentinv = None
         self.currentroom = None
@@ -176,7 +178,7 @@ class Food(Item):
         self.consumeverb = "eat"
     
     def use(self, user):
-        if self.count < 1:
+        if self.deleted:
             return False
         if not isinstance(user, Alive): #Only entities inherited from the Alive class need to eat
             if user.player:
@@ -193,7 +195,7 @@ class Food(Item):
             if self.currentinv:
                 self.currentinv.totalsize -= self.size*1
             if self.count < 1:
-                self.remove()
+                self.remove(True)
             return True
         elif user.player:
             print("You already have full hunger and thirst.")
