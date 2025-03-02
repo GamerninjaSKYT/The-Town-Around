@@ -1,5 +1,6 @@
 from Core.room import *
 from Core.inventory import *
+import sys
 
 class Entity:
     def __init__(self, name: str, 
@@ -14,6 +15,7 @@ class Entity:
         self.player = False
         self.inv = None
         self.equiped = None #An item from self.inv
+        self.dead = False
         self.index = "entity"
     
     def addToRoom(self, target:Room): #Moves the creature from its current room to the target room
@@ -48,6 +50,10 @@ class Entity:
     def die(self):
         self.hp = 0
         self.remove()
+        self.dead = True
+        if self.player:
+            print("You died!")
+            sys.exit()
     
     def remove(self): #Removes this entity from the world
         self.removeFromCurrentroom()

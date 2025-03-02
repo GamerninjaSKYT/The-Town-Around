@@ -12,7 +12,6 @@ mainroom.addTwoWay(secondroom)
 player = Human("Player","Just some random person")
 player.player = True
 player.inv.name = "Your inventory"
-player.sethunger(0)
 player.addToRoom(mainroom)
 
 apple = Apple()
